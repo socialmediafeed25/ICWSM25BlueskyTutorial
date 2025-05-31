@@ -1,0 +1,83 @@
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 1em;
+      background-color: #e6ecf0;
+    }
+
+    h2 {
+      text-align: center;
+      font-weight: 700;
+      color: #1da1f2;
+      margin-bottom: 1em;
+    }
+
+    .post {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      margin-right: 12px;
+      background-color: #ccc;
+      flex-shrink: 0;
+    }
+
+    .user-info {
+      line-height: 1.2;
+    }
+
+    .display-name {
+      font-weight: bold;
+      color: #14171a;
+    }
+
+    .handle {
+      color: #657786;
+      font-size: 0.9em;
+    }
+
+    .timestamp {
+      color: #657786;
+      font-size: 0.8em;
+      margin-bottom: 8px;
+    }
+
+    .text {
+      font-size: 1em;
+      color: #14171a;
+      white-space: pre-wrap;
+      margin-bottom: 8px;
+    }
+
+    .images {
+      margin-top: 8px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 8px;
+    }
+
+    .images img {
+      width: 100%;
+      border-radius: 12px;
+    }
+
+    #loading {
+      text-align: center;
+      color: #657786;
+      font-size: 0.9em;
+      padding: 1em;
+    }

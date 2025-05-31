@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bluesky Feed Visualizer</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<h2>Bluesky Feed - ICWSM Tutorial 2025</h2>
+<div id="feed"></div>
+<p id="loading">Loading...</p>
+
+<script>
+    const state = {
+        nextCursor: null,
+        loading: false,
+        scrollTimeout: null
+    };
+
+    const api = {
+        async fetchPosts(cursor) {
+            const url = cursor ? `/posts?cursor=${encodeURIComponent(cursor)}` : "/posts";
+
+            try {
+                const data = await $.getJSON(url);
+                if (!data.posts?.length) {
+                    return {posts: [], next: null};
+                }
+
+                const queryParams = new URLSearchParams();
+                data.posts.forEach(uri => queryParams.append("uris", uri));
+                const apiUrl = "https://public.api.bsky.app/xrpc/app.bsky.feed.getPosts?" + queryParams.toString();
+
+                const apiData = await $.getJSON(apiUrl);
+                return {posts: apiData.posts, next: data.cursor};
+
+            } catch (err) {
+                console.error("Failed to fetch posts:", err);
+                $("#loading").text("⚠️ Failed to load posts.");
+                state.loading = false;
+                return {posts: [], next: null};
+            }
+        }
+    };
+
+    const view = {
+        renderPost(post) {
+            const time = new Date(post.indexedAt).toLocaleString();
+            const text = post.record.text || "";
+            const user = post.author.displayName || post.author.handle;
+            const handle = post.author.handle;
+            const avatar = post.author.avatar || "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png";
+            const images = (post.embed?.images || [])
+                .map(img => `<img src="${img.fullsize}" alt="embedded image">`)
+                .join("");
+
+            const html = `
+          <div class="post">
+            <div class="post-header">
+              <img class="avatar" src="${avatar}" alt="avatar">
+              <div class="user-info">
+                <div class="display-name">${user}</div>
+                <div class="handle">@${handle}</div>
+              </div>
+            </div>
+            <div class="timestamp">${time}</div>
+            <div class="text">${text.replace(/\n/g, "<br>")}</div>
+            ${images ? `<div class="images">${images}</div>` : ""}
+          </div>
+        `;
+            $("#feed").append(html);
+        }
+    };
+
+    async function loadNext() {
+        if (state.loading) return;
+
+        state.loading = true;
+        $("#loading").show();
+
+        const {posts, next} = await api.fetchPosts(state.nextCursor);
+
+        posts.forEach(view.renderPost);
+        state.nextCursor = next;
+        state.loading = false;
+
+        if (!state.nextCursor) {
+            $("#loading").text("End of feed.");
+        } else {
+            $("#loading").hide();
+        }
+    }
+
+    $(window).on("scroll", () => {
+        if (state.scrollTimeout) return;
+
+        state.scrollTimeout = setTimeout(() => {
+            state.scrollTimeout = null;
+            if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+                loadNext();
+            }
+        }, 200);
+    });
+
+    loadNext();
+</script>
+</body>
+</html>

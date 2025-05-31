@@ -1,0 +1,9 @@
+# Ignore all PyCharm project settings
+**/.idea/
+
+# Ignore all Python bytecode and cache files in all subdirectories
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
+
+**/.DS_Store
