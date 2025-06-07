@@ -1,2 +1,2 @@
 orjson
-certifi
+websocket-client

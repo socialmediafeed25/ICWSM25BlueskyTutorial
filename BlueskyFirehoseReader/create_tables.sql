@@ -8,3 +8,5 @@ CREATE TABLE IF NOT EXISTS posts (
 );
 
 CREATE INDEX IF NOT EXISTS idx_events_created_at ON posts(time_us DESC);
+CREATE INDEX IF NOT EXISTS idx_rkey_at ON posts(rkey DESC);
+CREATE INDEX IF NOT EXISTS idx_did_at ON posts(did);
