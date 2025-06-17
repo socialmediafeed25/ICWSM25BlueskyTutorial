@@ -26,6 +26,9 @@ class CommitEventsHandler:
         """
         commit = event.get('commit', {})
 
+        # Only for debugging. Comment this out for production.
+        print(event)
+
         if commit.get('operation') == 'create':
             record = commit.get('record', {})
             if "reply" not in record:
@@ -33,8 +36,8 @@ class CommitEventsHandler:
                 did = event.get('did')               # Author's DID
                 rkey = commit.get('rkey')            # Record key (post ID)
                 time_us = event.get('time_us')       # Timestamp
-                langs = record.get("langs")          # (unused for now)
-                text = record.get("text")            # (unused for now)
+                langs = record.get("langs")          # Language codes of the post (List: ['en', 'jp', ...])
+                text = record.get("text")            # Text of the post
 
                 # Add post to the database
                 self.database.add((did, rkey, time_us))
