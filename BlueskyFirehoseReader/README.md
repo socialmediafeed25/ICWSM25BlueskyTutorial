@@ -8,22 +8,22 @@ This tutorial walks you through using Jetstream (Bluesky Firehose) to extract an
 
 ---
 
-\## Step 1: Select Posts in English
+## Step 1: Select Posts in English
 
 Jetstream delivers posts from all languages. To filter for English:
 
-\`\`\`python
+```python
 if "en" in record.get("langs", []):
     # proceed
-\`\`\`
+```
 
 ---
 
-\## Step 2: Match Political Keywords
+## Step 2: Match Political Keywords
 
 Define a list of political keywords and retain posts containing at least one keyword. Use a case-insensitive match.
 
-\`\`\`python
+```python
 political_keywords = [
     "trump",
     "immigration",
@@ -40,39 +40,37 @@ political_keywords = [
 def is_political(text):
     lowered = text.lower()
     return any(kw in lowered for kw in political_keywords)
-
-if is_political(record.get("text", "")):
-    # proceed
-\`\`\`
+```
 
 ---
 
-\## Step 3: Sentiment Analysis with VADER
+## Step 3: Sentiment Analysis with VADER
 
-Install \`vaderSentiment\` if you haven’t already:
+Install `vaderSentiment` if you haven’t already:
 
-\`\`\`bash
+```bash
 pip install vaderSentiment
-\`\`\`
+```
 
 Then use it to compute sentiment scores:
 
-\`\`\`python
+```python
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-
 analyzer = SentimentIntensityAnalyzer()
-text = record.get("text", "")
+...
+
+
 sentiment = analyzer.polarity_scores(text)
 if sentiment["compound"] > 0.5:
     # retain post
-\`\`\`
+```
 
-\### Example
+### Example
 
-\`\`\`python
+```python
 example_text = "I believe the president made a great decision today."
 sentiment = analyzer.polarity_scores(example_text)
 print(sentiment)  # Output: {'neg': 0.0, 'neu': 0.507, 'pos': 0.493, 'compound': 0.6249}
-\`\`\`
+```
 
-Since the \`compound\` score is greater than 0.5, this post would be included.
+Since the `compound` score is greater than 0.5, this post would be included.
